@@ -17,7 +17,7 @@ int led = 9;                // the pin that the LED is attached to
 int brightness = 0;         // how bright the LED is
 int fadeAmount = 5;         // how many points to fade the LED by
 int32_t frequency = 100; //frequency (in Hz)
-float GewensteDutyCycle = 10;
+float GewensteDutyCycle = 50;
 
 void setup()
 {
@@ -37,10 +37,10 @@ void setup()
 
 void loop()
 {
-  Serial.println("Gewenste dutycycle ");  //De gebruiker naar informatie vragen
-  while(Serial.available()<2)               //Wachten tot de gebruiker iets typt
-  {};
-  GewensteDutyCycle =Serial.parseFloat();           //De data die de gebruiker heeft ingegeven binnenlezen
+  //Serial.println("Gewenste dutycycle ");  //De gebruiker naar informatie vragen
+  //while(Serial.available()<2)               //Wachten tot de gebruiker iets typt
+  //{};
+  //GewensteDutyCycle =Serial.parseFloat();           //De data die de gebruiker heeft ingegeven binnenlezen
   //use this functions instead of analogWrite on 'initialized' pins
   pwmWrite(led, GewensteDutyCycle);
 

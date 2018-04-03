@@ -13,7 +13,7 @@
  2018/04/01: Basisversie RC control via UNO
  2018/04/02: Reverse engineering dutycycle aandrijfmotor voorruit rijden 
              Reverse engineering dutycycle servormotor links/ rechts
- 2018/04/03: Comments bij code plaatsen, afregelen dutycycle waarden om de ESC aan te sturen
+ 2018/04/03: Comments bij code plaatsen, afregelen dutycycle waarden om de ESC aan te sturen + toevoegen AutoNoodstop
 *****/
 
 #include <PWM.h>
@@ -28,6 +28,9 @@ volatile long RcBediening_startPulse;         //Bevat de waarde van micros() op 
 volatile unsigned int pulse_val;              //Bevat de tijdON van de PWM uitgestuurd door de RC zender
 unsigned long previousMillis = 0;             //Variabelen die we gebruiken om het afbouwen van de dutycycle van de aansturing van de aandrijfmotor
 unsigned long currentMillis = 0;              //constant te laten verlopen (het afbouwen mag langer maar niet korter duren, te kort = elektromotor heeft te weinig koppel
+const int pingPin = 7;
+unsigned int duration, afstand;
+
 
 
 void setup()
@@ -58,11 +61,13 @@ void loop()
   else
   {
     VooruitRijden();                                                //Vooruit rijden
+    autoNoodstop();
     //LinksStuur();                                                 //Links sturen
     //NeutraalStuur();                                              //Stuur in neutraalpositie plaatsen
     //RechtsStuur();                                                //Rechts sturen
   } 
   Serial.println(GewensteDutyCycle);                                //Weergave variabele in seriële monitor voor debugging
+  Serial.println(afstand);
 }
 
 

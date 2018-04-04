@@ -12,7 +12,7 @@ void VooruitRijden()
 {
   pinMode(motor,OUTPUT);
   currentMillis = millis();
-   if (currentMillis-previousMillis>=1 &&GewensteDutyCycle > 42.01)     //Met deze waarden kan je spelen als de belasting op de RC car stijgt of je hem trager/ sneller wilt laten rijden
+   if (currentMillis-previousMillis>=1 && GewensteDutyCycle > 42.08)     //Met deze waarden kan je spelen als de belasting op de RC car stijgt of je hem trager/ sneller wilt laten rijden
     {
       GewensteDutyCycle = GewensteDutyCycle-0.01;
       previousMillis = millis();

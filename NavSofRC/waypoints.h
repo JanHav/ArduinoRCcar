@@ -38,27 +38,26 @@ XasYas wps[] =
 };
 #endif  
 
-#if 0 // one long leg with approx 350m in length North to south and back
+#if 1 // one long leg with approx 350m in length North to south and back
 XasYas wps[] = 
 {                
-1.00,2.00,
-1.00,5.00,
-3.00,5.00,
-1.00,2.00,
+1000,800,
+1000,2000,
+500,2000,
+500,800,
 };
 #endif
 
 #if 0 // Test_LowSpeed.kml triangular course with one 90ÔøΩ turn
 XasYas wps[] = 
 {                
-1.00,2.00,
-1.00,5.00,
-3.00,5.00,
-1.00,2.00,
+800.00,400.00,
+1000.00,1000.00,
+900.00,2000.00,
 };
 #endif
 
-#if 1 //Welke waypoint lijst we gebruiken hangt af van welke ik aan zet met de #if 1 
+#if 0 //Welke waypoint lijst we gebruiken hangt af van welke ik aan zet met de #if 1 
 XasYas wps[] = 
 {                
 1.00,11.00,

@@ -80,7 +80,7 @@ void loop()
 
   RicoHuidigeKoers = Rico(xstart_wp, ystart_wp,wps[current_wp].Xas, wps[current_wp].Yas);                                 //Rico huidige koers
   RicoTrackKoers= Rico(xhuidig_wp, yhuidig_wp,wps[current_wp].Xas, wps[current_wp].Yas);                                  //Rico tracklijn 
-  if(isinf(RicoHuidigeKoers)== 1  ||  isinf(RicoTrackKoers))
+  if(isinf(RicoHuidigeKoers)== 1  ||  isinf(RicoTrackKoers)==1)
   {
     ErrorTrack = xhuidig_wp - xstart_wp;
   }
@@ -89,7 +89,8 @@ void loop()
     ErrorTrack = AfstandPuntRechte(xstart_wp, ystart_wp,wps[current_wp].Xas, wps[current_wp].Yas, xhuidig_wp, yhuidig_wp);  //In deze variabele wordt de afwijking van de trackline opgeslaan
   }
   AfstandTotWaypoint = AfstandPuntPunt(xhuidig_wp, yhuidig_wp,wps[current_wp].Xas, wps[current_wp].Yas);                  //Afstand tot volgende waypoint
-  TrackHoek = HoekTweeRechten(ErrorTrack, AfstandTotWaypoint);                                                            //Hoek tussen huidige trackline en oorspronkelijke trackline berekenen
+  //TrackHoek = HoekTweeRechten(ErrorTrack, AfstandTotWaypoint);                                                            //Hoek tussen huidige trackline en oorspronkelijke trackline berekenen
+  TrackHoek = Hoek(xhuidig_wp, yhuidig_wp,wps[current_wp].Xas, wps[current_wp].Yas); 
 
   if (AfstandTotWaypoint < 0.4)             //Op het ogenblik dat de AGV dicht genoeg bij het eindwaypoint is, moet de trackline 
   {                                         //gevormd worden door het huidige eindwaypoint en een volgend waypoint
@@ -113,11 +114,19 @@ void loop()
   {
     autoNoodstop();                                                 //autoNoodstop
     VooruitRijden();                                                //Vooruit rijden
-    if((ErrorTrack >=0.10 && RicoHuidigeKoers < RicoTrackKoers) ||((isinf(RicoHuidigeKoers)== 1  ||  isinf(RicoTrackKoers)==1)&& ErrorTrack >= 0.1) )
+    if((isinf(RicoHuidigeKoers)== 1) && abs(ErrorTrack) >= 0.1  && TrackHoek>0)
     {
       LinksStuur();
     }
-    else if((ErrorTrack >=0.10 && RicoHuidigeKoers > RicoTrackKoers) ||((isinf(RicoHuidigeKoers)== 1  ||  isinf(RicoTrackKoers)==1)&& ErrorTrack <= -0.1) )
+    else if((isinf(RicoHuidigeKoers)== 1) && abs(ErrorTrack) >= 0.1  && TrackHoek<0)
+    {
+      RechtsStuur();
+    }
+    else if((ErrorTrack >=0.10) && (RicoHuidigeKoers < RicoTrackKoers))
+    {
+      LinksStuur();
+    }
+    else if((ErrorTrack >=0.10) && (RicoHuidigeKoers > RicoTrackKoers))
     {
       RechtsStuur();
     }
@@ -146,6 +155,8 @@ void loop()
     Serial.print("Afstand tot waypoint ");
     Serial.println(AfstandTotWaypoint);
     Serial.print("Huidig waypoint ");
+    Serial.print("Trackhoek ");
+    Serial.println(TrackHoek);
     Serial.println(current_wp);
     Serial.print("Begin ");
     Serial.println(xstart_wp);  

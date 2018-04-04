@@ -61,3 +61,19 @@ double HoekTweeRechten (float OverstaandRecht, float SchuinRecht)
   return hoekDeg;
 }
 
+/*****
+Doel: De hoek bepalen tussen twee rechten die deel uitmaken van een rechthoekige driehoek met behulp van atan
+Paramters:
+float x1      float y1      float x2      float y2
+Return value:
+double
+*****/
+double Hoek( float x1, float y1, float x2, float y2)
+{
+  double hoekRad;
+  double hoekDeg;
+  hoekRad = atan((x1 -x2)/(y2-y1));
+  hoekDeg = degrees(hoekRad);
+  return hoekDeg;
+}
+

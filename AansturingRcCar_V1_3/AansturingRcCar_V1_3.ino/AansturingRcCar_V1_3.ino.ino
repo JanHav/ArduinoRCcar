@@ -28,8 +28,8 @@ volatile long RcBediening_startPulse;         //Bevat de waarde van micros() op 
 volatile unsigned int pulse_val;              //Bevat de tijdON van de PWM uitgestuurd door de RC zender
 unsigned long previousMillis = 0;             //Variabelen die we gebruiken om het afbouwen van de dutycycle van de aansturing van de aandrijfmotor
 unsigned long currentMillis = 0;              //constant te laten verlopen (het afbouwen mag langer maar niet korter duren, te kort = elektromotor heeft te weinig koppel
-const int pingPin = 7;
-unsigned int duration, afstand;
+const int pingPin = 7;                        //Pin waarop signaal ultrasone sensor Parallax toekomt
+unsigned int duration, afstand;               //Variabelen voor het halen van een afstand uit de Parallax sensor readings
 
 
 
@@ -60,9 +60,9 @@ void loop()
   }                                                                 
   else
   {
-    VooruitRijden();                                                //Vooruit rijden
+    //VooruitRijden();                                                //Vooruit rijden
     autoNoodstop();
-    //LinksStuur();                                                 //Links sturen
+    LinksStuur();                                                 //Links sturen
     //NeutraalStuur();                                              //Stuur in neutraalpositie plaatsen
     //RechtsStuur();                                                //Rechts sturen
   } 

@@ -45,6 +45,7 @@ void setup()
   Serial.begin(115200);                                     //De baudrate van de seriële monitor leggen we vast op 115200   
 ///NavSof////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   waypoints = sizeof(wps) / sizeof(XasYas); //Berekenen van het aantal waypoints in onze huidige array
+  Serial.print(waypoints);
 ///RC control////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   InitTimersSafe();                                         //Nodig om timers hun frequentie aan te passen (buiten timer 0, deze gebruikt Arduino onder meer voor de millis() functie
   pinMode(3, INPUT);                                        //Op pin 3 zit onze interrupt voor besturing over te nemen via de RC zender
@@ -98,6 +99,11 @@ void loop()
     current_wp++;
     xstart_wp = wps[previous_wp].Xas;
     ystart_wp = wps [previous_wp].Yas;
+  }
+
+  if (current_wp >= waypoints)                //Als de index die in current_wp zit gelijk is aan het totaal aantal waypoints in de array 
+  {                                           //dan moet de index terug naar nul gaan zodat we terug een coördinaat uit onze array kunnen halen
+    current_wp = 0;                           //Zo kan onze robot continu blijven een route volgen en kunnen we de nauwkeurigheid van een technologie achterhalen
   }
 
 ///RCcontrol/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

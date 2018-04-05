@@ -28,23 +28,34 @@ XasYas wps[] =
 };
 #endif
 
-#if 0 // Schuetzensee
+#if 1 // Schuetzensee
 XasYas wps[] = 
 {      
-1.00,2.00,
-1.00,5.00,
-3.00,5.00,
-1.00,2.00,
+3000,800,
+3000,5200,
+6000,5200,
+600,800,
 };
 #endif  
 
-#if 1 // one long leg with approx 350m in length North to south and back
+#if 0 // one long leg with approx 350m in length North to south and back
 XasYas wps[] = 
 {                
-1000,800,
-1000,2000,
-500,2000,
-500,800,
+1200,800,
+1800,800,
+2400,1000,
+3000,1400,
+3000,2000,
+3000,3000,
+2800,3700,
+2600,4600,
+2000,5200,
+1400,4900,
+800,4600,
+600,4300,
+600,3000,
+600,2000,
+600,800,
 };
 #endif
 

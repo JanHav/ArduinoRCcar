@@ -25,6 +25,7 @@ float RicoHuidigeKoers = 0;         // De rico van de lijn waarop de AGV nu zit
 float RicoTrackKoers = 0;           // De rico van de lijn die de AGV het best volgt
 float AfstandTotWaypoint = 0;       // De afstand tot het volgende waypoint
 double TrackHoek = 0;               // De hoek tussen de de lijn waarop de AGV nu zit en de lijn die de AGV moet volgen
+double TestHoek = 0;
 // Flag variables
 byte jumplock_wp = 0;   //Dit lock moet ervoor zorgen dat in het begin een trackline kan 
                         //gevormd worden door de trackline op te stellen van het huidig punt tot het volgende waypoint
@@ -33,7 +34,7 @@ byte UWBFlag = 0;
 int motor = 9;                                //Pin 9 UNO voor PWM aandrijfmotor (aandrijving)
 int servoMotor = 10;                          //Pin 10 UNO voor PWM servomotor (sturen)
 int32_t frequency = 100;                      //Frequentie (in Hz, we willen een PWM met een frequentie van 100 Hz
-float GewensteDutyCycle = 42.3;                 //Dutycycle (38/255) = 15,06%, kan verhoogd worden als er meer apparatuur op het RC car platform geplaatst wordt
+float GewensteDutyCycle = 42.12;                 //Dutycycle (38/255) = 15,06%, kan verhoogd worden als er meer apparatuur op het RC car platform geplaatst wordt
 float GewensteDutyCycleServo = 35;            //Dutycycle voor de stuurservo in de rechtuitstand
 volatile long RcBediening_startPulse;         //Bevat de waarde van micros() op het moment dat een stijgende flank op de interrupt wordt gezien
 volatile unsigned int pulse_val;              //Bevat de tijdON van de PWM uitgestuurd door de RC zender
@@ -49,13 +50,13 @@ boolean use_processing = true;                         // set this to true to ou
 
 const uint8_t num_anchors = 4;                                    // the number of anchors
 uint16_t anchors[num_anchors] = {0x6971, 0x602a, 0x6042, 0x6026};     // the network id of the anchors: change these to the network ids of your anchors.
-int32_t anchors_x[num_anchors] = {110,160,1710,1680};               // anchor x-coorindates in mm
-int32_t anchors_y[num_anchors] = {80,3030,3050,40};                  // anchor y-coordinates in mm
+int32_t anchors_x[num_anchors] = {110,165,4365,4325};               // anchor x-coorindates in mm
+int32_t anchors_y[num_anchors] = {85,6365,6390,45};                  // anchor y-coordinates in mm
 int32_t heights[num_anchors] = {250,250,250,250};              // anchor z-coordinates in mm
 
 uint8_t algorithm = POZYX_POS_ALG_TRACKING;             // positioning algorithm to use. try POZYX_POS_ALG_TRACKING for fast moving objects.
 uint8_t dimension = POZYX_2_5D;                           // positioning dimension
-int32_t height = 250;                                  // height of device, required in 2.5D positioning
+int32_t height = 180;                                  // height of device, required in 2.5D positioning
 float lastUwbUpdate = 0;
 float currentUwbUpdate = 0;
 
@@ -123,7 +124,7 @@ coordinates_t position;
   }
   currentUwbUpdate = millis();
   
-  if((currentUwbUpdate-lastUwbUpdate) > 1000)
+  if((currentUwbUpdate-lastUwbUpdate) > 0.001)
   {
     UWBFlag = 0;
   }
@@ -175,10 +176,10 @@ coordinates_t position;
     ErrorTrack = AfstandPuntRechte(xstart_wp, ystart_wp,wps[current_wp].Xas, wps[current_wp].Yas, xhuidig_wp, yhuidig_wp);  //In deze variabele wordt de afwijking van de trackline opgeslaan
   }
   AfstandTotWaypoint = AfstandPuntPunt(xhuidig_wp, yhuidig_wp,wps[current_wp].Xas, wps[current_wp].Yas);                  //Afstand tot volgende waypoint
-  //TrackHoek = HoekTweeRechten(ErrorTrack, AfstandTotWaypoint);                                                            //Hoek tussen huidige trackline en oorspronkelijke trackline berekenen
+  TestHoek = HoekTweeRechten(ErrorTrack, AfstandTotWaypoint);                                                            //Hoek tussen huidige trackline en oorspronkelijke trackline berekenen
   TrackHoek = Hoek(xhuidig_wp, yhuidig_wp,wps[current_wp].Xas, wps[current_wp].Yas); 
 
-  if (AfstandTotWaypoint < 300)             //Op het ogenblik dat de AGV dicht genoeg bij het eindwaypoint is, moet de trackline 
+  if (AfstandTotWaypoint < 400)             //Op het ogenblik dat de AGV dicht genoeg bij het eindwaypoint is, moet de trackline 
   {                                         //gevormd worden door het huidige eindwaypoint en een volgend waypoint
     previous_wp = current_wp;
     current_wp++;
@@ -198,7 +199,7 @@ coordinates_t position;
     pinMode(motor,INPUT);                                           //De motorpin en servomotorpin als INPUT benoemen zodat ze niet het signaal van de RC zender beïnvloeden
     pinMode(servoMotor, INPUT);                                     //Opdat de auto na afzetten RC zender terug bestuurd zou kunnen worden door de UNO dienen we de variabele die
     --pulse_val;                                                    //de laatste tijdON bevat te verkleinen we in het else gedeelte (=UNO aansturing) geraken
-    GewensteDutyCycle = 42.3;                                         //Variabelen krijgen deze waarden bij overgang controle RC zender naar UNO                                         
+    GewensteDutyCycle = 42.12;                                         //Variabelen krijgen deze waarden bij overgang controle RC zender naar UNO                                         
     GewensteDutyCycleServo = 35;               
   }                                                                 
   else
@@ -207,19 +208,19 @@ coordinates_t position;
     VooruitRijden();                                                //Vooruit rijden
     if((isinf(RicoHuidigeKoers)== 1) && abs(ErrorTrack) >= 100  && TrackHoek>0)
     {
-      LinksStuur();
+      LinksStuur(TestHoek);
     }
     else if((isinf(RicoHuidigeKoers)== 1) && abs(ErrorTrack) >= 100  && TrackHoek<0)
     {
-      RechtsStuur();
+      RechtsStuur(TestHoek);
     }
     else if((ErrorTrack >=100) && (RicoHuidigeKoers < RicoTrackKoers))
     {
-      LinksStuur();
+      LinksStuur(TestHoek);
     }
     else if((ErrorTrack >=100) && (RicoHuidigeKoers > RicoTrackKoers))
     {
-      RechtsStuur();
+      RechtsStuur(TestHoek);
     }
     else
     {
@@ -238,6 +239,7 @@ coordinates_t position;
     Serial.println(xstart_wp);
     Serial.print("Huidige y-start waypoint ");
     Serial.println(ystart_wp);
+    */
     Serial.print("De error op de track is ");
     Serial.println(ErrorTrack);
     Serial.print("Rico huidige koers ");
@@ -249,6 +251,12 @@ coordinates_t position;
     Serial.print("Huidig waypoint ");
     Serial.print("Trackhoek ");
     Serial.println(TrackHoek);
+    Serial.print("Gewenste duty servo ");
+    Serial.println(GewensteDutyCycleServo);
+    Serial.print("Testhoek");
+    Serial.println(TestHoek);
+    Serial.println(" ");
+    /*
     Serial.println(current_wp);
     Serial.print("Begin ");
     Serial.println(xstart_wp);  */

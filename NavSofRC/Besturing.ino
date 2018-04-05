@@ -12,7 +12,7 @@ void VooruitRijden()
 {
   pinMode(motor,OUTPUT);
   currentMillis = millis();
-   if (currentMillis-previousMillis>=1 && GewensteDutyCycle > 42.08)     //Met deze waarden kan je spelen als de belasting op de RC car stijgt of je hem trager/ sneller wilt laten rijden
+   if (currentMillis-previousMillis>=1 && GewensteDutyCycle > 42.01)     //Met deze waarden kan je spelen als de belasting op de RC car stijgt of je hem trager/ sneller wilt laten rijden
     {
       GewensteDutyCycle = GewensteDutyCycle-0.01;
       previousMillis = millis();
@@ -27,10 +27,12 @@ void
 Return value:
 geen
 *****/
-void LinksStuur()
+void LinksStuur(double angle)
 {
   pinMode(servoMotor,OUTPUT);
-  GewensteDutyCycleServo = 44;    //47
+  double abhoek = abs(angle);
+  //GewensteDutyCycleServo = 44;    //47
+  GewensteDutyCycleServo = 35 + (abhoek*2/10);
   pwmWrite(servoMotor, GewensteDutyCycleServo);                         //De motor aansturen met de gewenste dutycycle
 }
 
@@ -55,10 +57,12 @@ void
 Return value:
 geen
 *****/
-void RechtsStuur()
+void RechtsStuur(double angle)
 {
   pinMode(servoMotor,OUTPUT);
-  GewensteDutyCycleServo = 25;//22
+  double abhoek = abs(angle);
+  //GewensteDutyCycleServo = 25;//22
+  GewensteDutyCycleServo = 35 - (abhoek*2/10);
   pwmWrite(servoMotor, GewensteDutyCycleServo);                     //De motor aansturen met de gewenste dutycycle
 }
 

@@ -32,7 +32,14 @@ void LinksStuur(double angle)
   pinMode(servoMotor,OUTPUT);
   double abhoek = abs(angle);
   //GewensteDutyCycleServo = 44;    //47
-  GewensteDutyCycleServo = 35 + (abhoek*9/100);
+  if (0 < abhoek <= 90)
+  {
+  GewensteDutyCycleServo = 35 + (abhoek*9/10);
+  }
+  else
+  {
+    GewensteDutyCycleServo = 44;
+  }
   pwmWrite(servoMotor, GewensteDutyCycleServo);                         //De motor aansturen met de gewenste dutycycle
 }
 
@@ -62,7 +69,14 @@ void RechtsStuur(double angle)
   pinMode(servoMotor,OUTPUT);
   double abhoek = abs(angle);
   //GewensteDutyCycleServo = 25;//22
-  GewensteDutyCycleServo = 35 - (abhoek*4/100);
+  if (0 < abhoek <= 90)
+  {
+  GewensteDutyCycleServo = 35 - (abhoek*9/10);
+  }
+  else
+  {
+    GewensteDutyCycleServo = 26;
+  }
   pwmWrite(servoMotor, GewensteDutyCycleServo);                     //De motor aansturen met de gewenste dutycycle
 }
 
